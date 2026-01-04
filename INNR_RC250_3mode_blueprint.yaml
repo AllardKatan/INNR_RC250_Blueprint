@@ -475,6 +475,7 @@ actions:
         sequence:
           - choose:
               - conditions: "{{trigger.id == 'on_press' or trigger.id == 'off_press'}}" #on/off presses, color/brightness mode
+                sequence:
                 - if:
                   - condition: light.is_on
                     target:
@@ -652,5 +653,6 @@ actions:
           value: "{{leftright_value}}"
 mode: queued
 max: 5
+
 
 
