@@ -1,6 +1,6 @@
 #A blueprint for Home Assistant to use the INNR RC250 5 button remote
 #By Allard Katan
-#Version 0.1, November 2024
+#Version 0.2, January 2025
 #This blueprint is open source software distributed under the GPLV3 license
 
 blueprint:
@@ -355,7 +355,7 @@ actions:
                     target:
                       entity_id: !input light_target
                     options:
-                    behavior: any
+                      behavior: any
                   then:
                     - action: light.turn_off
                       target:
@@ -481,7 +481,7 @@ actions:
                     target:
                       entity_id: !input light_target
                     options:
-                    behavior: any
+                      behavior: any
                   then:
                     - action: light.turn_off
                       target:
