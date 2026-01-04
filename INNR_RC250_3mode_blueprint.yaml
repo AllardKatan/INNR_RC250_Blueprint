@@ -474,8 +474,7 @@ actions:
       - conditions: "{{action_type == 'col'}}"
         sequence:
           - choose:
-              - conditions: "{{trigger.id == 'on_press' or trigger.id == 'off_press'}}" #on/off presses, cycle scenes
-                sequence:
+              - conditions: "{{trigger.id == 'on_press' or trigger.id == 'off_press'}}" #on/off presses, color/brightness mode
                 - if:
                   - condition: light.is_on
                     target:
@@ -653,4 +652,5 @@ actions:
           value: "{{leftright_value}}"
 mode: queued
 max: 5
+
 
