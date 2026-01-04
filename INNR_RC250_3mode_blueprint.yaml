@@ -347,17 +347,23 @@ actions:
         sequence:
           - choose: #different triggers during cycling
               #on and off can be tricky if lights are turned on/off with other means as well
-              #whether you use a 'toggle' or follow the button on/off, there will be unexpected behavior
-              - conditions: "{{trigger.id == 'on_press'}}" #on presses, cycle scenes
+              #modified jan 2025 to check for light state. 
+              - conditions: "{{trigger.id == 'on_press' or trigger.id == 'off_press'}}" #on/off presses, cycle scenes
                 sequence:
-                  - action: light.turn_on
-                    target: 
+                - if:
+                  - condition: light.is_on
+                    target:
                       entity_id: !input light_target
-              - conditions: "{{trigger.id == 'off_press'}}" #off presses, cycle scenes
-                sequence:
-                  - action: light.turn_off
-                    target: 
-                      entity_id: !input light_target
+                    options:
+                    behavior: any
+                  then:
+                    - action: light.turn_off
+                      target:
+                        entity_id: !input light_target
+                  else:
+                    - action: light.turn_on
+                      target:
+                        entity_id: !input light_target
               - conditions: "{{trigger.id == 'leftright'}}" #leftright presses, cycle scenes
                 sequence:
                   - choose: #if cycling and leftright, choose action based on payload
@@ -468,16 +474,22 @@ actions:
       - conditions: "{{action_type == 'col'}}"
         sequence:
           - choose:
-              - conditions: "{{trigger.id == 'on_press'}}" #on presses, col mode
+              - conditions: "{{trigger.id == 'on_press' or trigger.id == 'off_press'}}" #on/off presses, cycle scenes
                 sequence:
-                  - action: light.turn_on
-                    target: 
+                - if:
+                  - condition: light.is_on
+                    target:
                       entity_id: !input light_target
-              - conditions: "{{trigger.id == 'off_press'}}" #off presses, col mode
-                sequence:
-                  - action: light.turn_off
-                    target: 
-                      entity_id: !input light_target
+                    options:
+                    behavior: any
+                  then:
+                    - action: light.turn_off
+                      target:
+                        entity_id: !input light_target
+                  else:
+                    - action: light.turn_on
+                      target:
+                        entity_id: !input light_target
               - conditions: "{{trigger.id == 'up'}}" #up presses, col mode
                 sequence:
                   - action: light.turn_on
@@ -641,3 +653,4 @@ actions:
           value: "{{leftright_value}}"
 mode: queued
 max: 5
+
