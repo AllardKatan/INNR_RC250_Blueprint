@@ -1,16 +1,13 @@
-#A blueprint for Home Assistant to use the INNR RC250 5 button remote
-#By Allard Katan
-#Version 0.2, January 2025
-#This blueprint is open source software distributed under the GPLV3 license
-
 blueprint:
   domain: automation
   name: INNR RC250 remote 3 mode blueprint
-  description: >-
-    Blueprint that puts the INNR RC250 five button remote to use for different scenarios. It can either assign an action to each button press ('fixed mode'), cycle through a list of five scenes ('cycle mode'), or control color and brightness of one or more lights (color mode)
+  description: Blueprint that puts the INNR RC250 five button remote to use for different
+    scenarios. It can either assign an action to each button press ('fixed mode'),
+    cycle through a list of five scenes ('cycle mode'), or control color and brightness
+    of one or more lights (color mode)
   author: Allard Katan
   homeassistant:
-    min_version: 2024.10.0 # uses modern script syntax with actions, triggers etc so I think this is necessary
+    min_version: 2024.10.0
   input:
     action_type:
       name: Action type
@@ -18,108 +15,117 @@ blueprint:
         select:
           multiple: false
           options:
-            - label: Fixed action per button
-              value: fix
-            - label: Cycle scene activation
-              value: cyc
-            - label: Color or Color temperature and brightness of light(s)
-              value: col
+          - label: Fixed action per button
+            value: fix
+          - label: Cycle scene activation
+            value: cyc
+          - label: Color or Color temperature and brightness of light(s)
+            value: col
+          custom_value: false
+          sort: false
     remote_device_id:
       name: Remote device
       selector:
         device:
           filter:
-            - integration: "zha"
-              manufacturer: "innr"
-              model: "RC 250"
+          - integration: zha
+            manufacturer: innr
+            model: RC 250
+          multiple: false
     input_helper:
       name: input helper
       selector:
         entity:
           filter:
-            - domain: input_text
+          - domain:
+            - input_text
+          multiple: false
+          reorder: false
     light_target:
-      name: Light(s) to affect. To avoid errors, even if you do not use this for lights, please select a valid target here.
+      name: Light(s) to affect. To avoid errors, even if you do not use this for lights,
+        please select a valid target here.
       default: []
       selector:
         entity:
           filter:
-            - domain: light
+          - domain:
+            - light
           multiple: true
+          reorder: false
     fixed_section:
       name: Fixed action settings
-      description: >-
-        This is for always doing the same action for each individual button, regardless of the history. 
-        Assign a scene to each button, use it to control a media player, anything you want. 
-        Use your imagination!
+      description: This is for always doing the same action for each individual button,
+        regardless of the history.  Assign a scene to each button, use it to control
+        a media player, anything you want.  Use your imagination!
       collapsed: true
       input:
         on_fixed:
           name: Action for 'On' press of center button
           default: []
           selector:
-            action:
+            action: {}
         off_fixed:
           name: Action for 'Off' press of center button
           default: []
           selector:
-            action:
+            action: {}
         up_fixed:
           name: Action to run when 'up' button is pressed
           default: []
           selector:
-            action:
+            action: {}
         down_fixed:
           name: Action to run when 'down' button is pressed
           default: []
           selector:
-            action:
+            action: {}
         left_fixed:
           name: Action to run when 'left' button is pressed
           default: []
           selector:
-            action:
+            action: {}
         right_fixed:
           name: Action to run when 'right' button is pressed
           default: []
           selector:
-            action:
+            action: {}
         long_up_fixed:
           name: Action to run when 'up' button is long-pressed (hold detection)
           default: []
           selector:
-            action:
+            action: {}
         long_down_fixed:
           name: Action to run when 'down' button is long-pressed (hold detection)
           default: []
           selector:
-            action:
+            action: {}
         long_updown_stop_fixed:
           name: Action to run when 'down' or 'up' button is released after long press
           default: []
           selector:
-            action:  
+            action: {}
         long_left_fixed:
           name: Action to run when 'left' button is long-pressed (hold detection)
           default: []
           selector:
-            action:
+            action: {}
         long_right_fixed:
           name: Action to run when 'right' button is long-pressed (hold detection)
           default: []
           selector:
-            action:
+            action: {}
         long_leftright_stop_fixed:
-          name: Action to run when 'left' or 'right' button is released after long press
+          name: Action to run when 'left' or 'right' button is released after long
+            press
           default: []
           selector:
-            action:    
+            action: {}
     cyclic_5_section:
       name: 5 light scene cycle settings
-      description: >-
-        This is for cycling through 5 distinct scenes with the left-right buttons. 
-        The scenes can contain any type of states you want, but for the up and down buttons, the blueprint is 
-        only configured to increase or decrease the brightness of light entities
+      description: This is for cycling through 5 distinct scenes with the left-right
+        buttons.  The scenes can contain any type of states you want, but for the
+        up and down buttons, the blueprint is  only configured to increase or decrease
+        the brightness of light entities
       collapsed: true
       input:
         cycle_scene1:
@@ -128,46 +134,63 @@ blueprint:
           selector:
             entity:
               filter:
-                - domain: scene
+              - domain:
+                - scene
+              multiple: false
+              reorder: false
         cycle_scene2:
           name: Scene 2 in the list
           default: []
           selector:
             entity:
               filter:
-                - domain: scene
+              - domain:
+                - scene
+              multiple: false
+              reorder: false
         cycle_scene3:
           name: Scene 3 in the list
           default: []
           selector:
             entity:
               filter:
-                - domain: scene
+              - domain:
+                - scene
+              multiple: false
+              reorder: false
         cycle_scene4:
           name: Scene 4 in the list
           default: []
           selector:
             entity:
               filter:
-                - domain: scene
+              - domain:
+                - scene
+              multiple: false
+              reorder: false
         cycle_scene5:
           name: Scene 5 in the list
           default: []
           selector:
             entity:
               filter:
-                - domain: scene
+              - domain:
+                - scene
+              multiple: false
+              reorder: false
         cycle_updown_percentage:
           name: percentage to change per click of the up-down buttons
           selector:
             number:
-              min: 1
-              max: 99
+              min: 1.0
+              max: 99.0
+              step: 1.0
+              mode: slider
           default: 10
     color_section:
       name: Color mode settings
-      description: >-
-        This is only for lights, it allows you increase or decrease the brightness and/or color of the light(s)
+      description: This is only for lights, it allows you increase or decrease the
+        brightness and/or color of the light(s)
       collapsed: true
       input:
         col_colortype:
@@ -176,120 +199,124 @@ blueprint:
           selector:
             select:
               options:
-                - label: full color (Hue/Saturation)
-                  value: hsv
-                - label: Color temperature and brightness
-                  value: kelvin
+              - label: full color (Hue/Saturation)
+                value: hsv
+              - label: Color temperature and brightness
+                value: kelvin
+              multiple: false
+              custom_value: false
+              sort: false
         col_updown_percentage:
           name: percentage OF CURRENT VALUE to change per click of the up-down buttons
           selector:
             number:
-              min: 1
-              max: 99
+              min: 1.0
+              max: 99.0
+              step: 1.0
+              mode: slider
           default: 10
         col_leftright_percentage:
-          name: percentage OF MAXIMUM VALUE to change per click of the left-right buttons
+          name: percentage OF MAXIMUM VALUE to change per click of the left-right
+            buttons
           selector:
             number:
-              min: 1
-              max: 99
+              min: 1.0
+              max: 99.0
+              step: 1.0
+              mode: slider
           default: 10
-
-# device_attr(device_id, 'identifiers') | first | last }}    #gets IEEE from device id
-
+  source_url: https://github.com/AllardKatan/INNR_RC250_Blueprint/blob/main/INNR_RC250_3mode_blueprint.yaml
 triggers:
-  - trigger: event
-    event_type: zha_event
-    event_data:
-      device_id: !input remote_device_id
-      command: "on"
-    id: on_press
-    alias: on press on/off
-  - trigger: event
-    event_type: zha_event
-    event_data:
-      device_id: !input remote_device_id
-      command: "off"
-    id: off_press
-    alias: off press on/off
-  - trigger: event
-    event_type: zha_event
-    event_data:
-      device_id: !input remote_device_id
-      command: step
-      params:
-        step_mode: 0
-    id: up
-    alias: up press
-  - trigger: event
-    event_type: zha_event
-    event_data:
-      device_id: !input remote_device_id
-      command: step
-      params:
-        step_mode: 1
-    id: down
-    alias: down press
-  - alias: left or right press
-    trigger: event
-    event_type: zha_event
-    event_data:
-      device_id: !input remote_device_id
-      command: move_to_color_temp
-    id: leftright
-  - alias: long press up
-    trigger: event
-    event_type: zha_event
-    event_data:
-      device_id: !input remote_device_id
-      command: move
-      params:
-        move_mode: 0
-    id: long_up
-  - alias: long press down
-    trigger: event
-    event_type: zha_event
-    event_data:
-      device_id: !input remote_device_id
-      command: move
-      params:
-        move_mode: 1
-    id: long_down
-  - alias: long press updown_stop
-    trigger: event
-    event_type: zha_event
-    event_data:
-      device_id: !input remote_device_id
-      command: stop
-    id: long_updown_stop
-  - alias: long press right
-    trigger: event
-    event_type: zha_event
-    event_data:
-      device_id: !input remote_device_id
-      command: enhanced_move_hue
-      params:
-        move_mode: 1
-    id: long_right
-  - alias: long press left
-    trigger: event
-    event_type: zha_event
-    event_data:
-      device_id: !input remote_device_id
-      command: enhanced_move_hue
-      params:
-        move_mode: 3
-    id: long_left
-  - alias: long press leftright_stop
-    trigger: event
-    event_type: zha_event
-    event_data:
-      device_id: !input remote_device_id
-      command: stop_move_step
-    id: long_leftright_stop
-
+- trigger: event
+  event_type: zha_event
+  event_data:
+    device_id: !input remote_device_id
+    command: 'on'
+  id: on_press
+  alias: on press on/off
+- trigger: event
+  event_type: zha_event
+  event_data:
+    device_id: !input remote_device_id
+    command: 'off'
+  id: off_press
+  alias: off press on/off
+- trigger: event
+  event_type: zha_event
+  event_data:
+    device_id: !input remote_device_id
+    command: step
+    params:
+      step_mode: 0
+  id: up
+  alias: up press
+- trigger: event
+  event_type: zha_event
+  event_data:
+    device_id: !input remote_device_id
+    command: step
+    params:
+      step_mode: 1
+  id: down
+  alias: down press
+- alias: left or right press
+  trigger: event
+  event_type: zha_event
+  event_data:
+    device_id: !input remote_device_id
+    command: move_to_color_temp
+  id: leftright
+- alias: long press up
+  trigger: event
+  event_type: zha_event
+  event_data:
+    device_id: !input remote_device_id
+    command: move
+    params:
+      move_mode: 0
+  id: long_up
+- alias: long press down
+  trigger: event
+  event_type: zha_event
+  event_data:
+    device_id: !input remote_device_id
+    command: move
+    params:
+      move_mode: 1
+  id: long_down
+- alias: long press updown_stop
+  trigger: event
+  event_type: zha_event
+  event_data:
+    device_id: !input remote_device_id
+    command: stop
+  id: long_updown_stop
+- alias: long press right
+  trigger: event
+  event_type: zha_event
+  event_data:
+    device_id: !input remote_device_id
+    command: enhanced_move_hue
+    params:
+      move_mode: 1
+  id: long_right
+- alias: long press left
+  trigger: event
+  event_type: zha_event
+  event_data:
+    device_id: !input remote_device_id
+    command: enhanced_move_hue
+    params:
+      move_mode: 3
+  id: long_left
+- alias: long press leftright_stop
+  trigger: event
+  event_type: zha_event
+  event_data:
+    device_id: !input remote_device_id
+    command: stop_move_step
+  id: long_leftright_stop
 conditions: []
-
 variables:
   action_type: !input action_type
   input_helper: !input input_helper
@@ -298,361 +325,359 @@ variables:
   col_colortype: !input col_colortype
   light_target: !input light_target
   col_leftright_percentage: !input col_leftright_percentage
-  last_leftright_value: "{{0 if (states(input_helper) is none or (not states(input_helper) is in ['200', '285', '370', '454', '588']))  else states(input_helper)}}" 
-  leftright_value: "{{(trigger.event.data.params.color_temp_mireds|default(0))|int}}"
-  #right: either we jumped from 588 to 200, or the number was less then it is now, but we did not jump from 200 to 588
-  right_was_pressed: >-
-      {{trigger.id == 'leftright' and (
-      (last_leftright_value == 588 and leftright_value == 200 ) or (
-      last_leftright_value < leftright_value and not 
-      (last_leftright_value==200 and leftright_value ==588))
-      )}}
-  
-  left_was_pressed:
-    "{{trigger.id == 'leftright' and not right_was_pressed}}"
-    #all other cases with left right press are assigned to left
-
+  last_leftright_value: '{{0 if (states(input_helper) is none or (not states(input_helper)
+    is in [''200'', ''285'', ''370'', ''454'', ''588'']))  else states(input_helper)}}'
+  leftright_value: '{{(trigger.event.data.params.color_temp_mireds|default(0))|int}}'
+  right_was_pressed: '{{trigger.id == ''leftright'' and ( (last_leftright_value ==
+    588 and leftright_value == 200 ) or ( last_leftright_value < leftright_value and
+    not  (last_leftright_value==200 and leftright_value ==588)) )}}'
+  left_was_pressed: '{{trigger.id == ''leftright'' and not right_was_pressed}}'
 actions:
-  - choose:
-      # the actions for fixed button associations
-      - conditions: "{{action_type == 'fix'}}"
+- choose:
+  - conditions: '{{action_type == ''fix''}}'
+    sequence:
+    - choose:
+      - conditions: '{{trigger.id == ''on_press''}}'
+        sequence: !input on_fixed
+      - conditions: '{{trigger.id == ''off_press''}}'
+        sequence: !input off_fixed
+      - conditions: '{{trigger.id == ''up''}}'
+        sequence: !input up_fixed
+      - conditions: '{{trigger.id == ''down''}}'
+        sequence: !input down_fixed
+      - conditions: '{{left_was_pressed}}'
+        sequence: !input left_fixed
+      - conditions: '{{right_was_pressed}}'
+        sequence: !input right_fixed
+      - conditions: '{{trigger.id == ''long_up''}}'
+        sequence: !input long_up_fixed
+      - conditions: '{{trigger.id == ''long_down''}}'
+        sequence: !input long_down_fixed
+      - conditions: '{{trigger.id == ''long_updown_stop''}}'
+        sequence: !input long_updown_stop_fixed
+      - conditions: '{{trigger.id == ''long_left''}}'
+        sequence: !input long_left_fixed
+      - conditions: '{{trigger.id == ''long_right''}}'
+        sequence: !input long_right_fixed
+      - conditions: '{{trigger.id == ''long_leftright_stop''}}'
+        sequence: !input long_leftright_stop_fixed
+  - conditions: '{{action_type == ''cyc''}}'
+    sequence:
+    - choose:
+      - conditions: '{{trigger.id == ''on_press'' or trigger.id == ''off_press''}}'
         sequence:
-          - choose:
-              - conditions: "{{trigger.id == 'on_press'}}"
-                sequence: !input on_fixed
-              - conditions: "{{trigger.id == 'off_press'}}"
-                sequence: !input off_fixed
-              - conditions: "{{trigger.id == 'up'}}"
-                sequence: !input up_fixed
-              - conditions: "{{trigger.id == 'down'}}"
-                sequence: !input down_fixed
-              - conditions: "{{left_was_pressed}}"
-                sequence: !input left_fixed
-              - conditions: "{{right_was_pressed}}"
-                sequence: !input right_fixed
-              - conditions: "{{trigger.id == 'long_up'}}"
-                sequence: !input long_up_fixed
-              - conditions: "{{trigger.id == 'long_down'}}"
-                sequence: !input long_down_fixed
-              - conditions: "{{trigger.id == 'long_updown_stop'}}"
-                sequence: !input long_updown_stop_fixed
-              - conditions: "{{trigger.id == 'long_left'}}"
-                sequence: !input long_left_fixed
-              - conditions: "{{trigger.id == 'long_right'}}"
-                sequence: !input long_right_fixed
-              - conditions: "{{trigger.id == 'long_leftright_stop'}}"
-                sequence: !input long_leftright_stop_fixed
-      # the actions for cycling : 
-      - conditions: "{{action_type == 'cyc'}}"
+        - if:
+          - condition: state
+            entity_id: !input light_target
+            match: any
+            state: "on"
+          then:
+          - action: light.turn_off
+            target:
+              entity_id: !input light_target
+          else:
+          - action: light.turn_on
+            target:
+              entity_id: !input light_target
+      - conditions: '{{trigger.id == ''leftright''}}'
         sequence:
-          - choose: #different triggers during cycling
-              #on and off can be tricky if lights are turned on/off with other means as well
-              #modified jan 2025 to check for light state. 
-              - conditions: "{{trigger.id == 'on_press' or trigger.id == 'off_press'}}" #on/off presses, cycle scenes
+        - choose:
+          - conditions: '{{leftright_value == 200}}'
+            sequence:
+            - action: scene.turn_on
+              target:
+                entity_id: !input cycle_scene1
+          - conditions: '{{leftright_value == 285}}'
+            sequence:
+            - action: scene.turn_on
+              target:
+                entity_id: !input cycle_scene2
+          - conditions: '{{leftright_value == 370}}'
+            sequence:
+            - action: scene.turn_on
+              target:
+                entity_id: !input cycle_scene3
+          - conditions: '{{leftright_value == 454}}'
+            sequence:
+            - action: scene.turn_on
+              target:
+                entity_id: !input cycle_scene4
+          - conditions: '{{leftright_value == 588}}'
+            sequence:
+            - action: scene.turn_on
+              target:
+                entity_id: !input cycle_scene5
+      - conditions: '{{trigger.id == ''up''}}'
+        sequence:
+        - action: light.turn_on
+          data:
+            brightness_step_pct: '{{cycle_updown_percentage|float}}'
+          target:
+            entity_id: !input light_target
+      - conditions: '{{trigger.id == ''down''}}'
+        sequence:
+        - action: light.turn_on
+          data:
+            brightness_step_pct: '{{0 - cycle_updown_percentage|float}}'
+          target:
+            entity_id: !input light_target
+      - conditions: '{{trigger.id==''long_up''}}'
+        sequence:
+        - parallel:
+          - repeat:
+              sequence:
+              - action: light.turn_on
+                data:
+                  brightness_step_pct: '{{0.25 * cycle_updown_percentage|float}}'
+                target:
+                  entity_id: !input light_target
+              - delay:
+                  milliseconds: 125
+              until: '{{repeat.index >= 40 or states(input_helper) == ''release_has_triggered''
+                }}'
+          - sequence:
+            - wait_for_trigger:
+              - trigger: event
+                event_type: zha_event
+                event_data:
+                  device_id: !input remote_device_id
+                  command: stop
+              timeout:
+                seconds: 5
+            - action: input_text.set_value
+              target:
+                entity_id: !input input_helper
+              data:
+                value: release_has_triggered
+        - action: input_text.set_value
+          target:
+            entity_id: !input input_helper
+          data:
+            value: '{{last_leftright_value}}'
+      - conditions: '{{trigger.id==''long_down''}}'
+        sequence:
+        - parallel:
+          - repeat:
+              sequence:
+              - action: light.turn_on
+                data:
+                  brightness_step_pct: '{{0- 0.25 * cycle_updown_percentage|float}}'
+                target:
+                  entity_id: !input light_target
+              - delay:
+                  milliseconds: 125
+              until: '{{repeat.index >= 40 or states(input_helper) == ''release_has_triggered''
+                }}'
+          - sequence:
+            - wait_for_trigger:
+              - trigger: event
+                event_type: zha_event
+                event_data:
+                  device_id: !input remote_device_id
+                  command: stop
+              timeout:
+                seconds: 5
+            - action: input_text.set_value
+              target:
+                entity_id: !input input_helper
+              data:
+                value: release_has_triggered
+        - action: input_text.set_value
+          target:
+            entity_id: !input input_helper
+          data:
+            value: '{{last_leftright_value}}'
+  - conditions: '{{action_type == ''col''}}'
+    sequence:
+    - choose:
+      - conditions: '{{trigger.id == ''on_press'' or trigger.id == ''off_press''}}'
+        sequence:
+        - if:
+          - condition: state
+            entity_id: !input light_target
+            match: any
+            state: "on"
+            
+          then:
+          - action: light.turn_off
+            target:
+              entity_id: !input light_target
+          else:
+          - action: light.turn_on
+            target:
+              entity_id: !input light_target
+      - conditions: '{{trigger.id == ''up''}}'
+        sequence:
+        - action: light.turn_on
+          data:
+            brightness_step_pct: '{{col_updown_percentage|int}}'
+          target:
+            entity_id: !input light_target
+      - conditions: '{{trigger.id == ''down''}}'
+        sequence:
+        - action: light.turn_on
+          data:
+            brightness_step_pct: '{{0-col_updown_percentage|int}}'
+          target:
+            entity_id: !input light_target
+      - conditions: '{{trigger.id==''leftright''}}'
+        sequence:
+        - variables:
+            current_ct: '{{2202 if state_attr(light_target[0],''color_temp_kelvin'')
+              is none else state_attr(light_target[0],''color_temp_kelvin'')|int }}'
+            current_hue: '{{180 if state_attr(light_target[0],''hs_color'') is none
+              else state_attr(light_target[0],''hs_color'')[0]|int }}'
+        - if:
+          - condition: template
+            value_template: '{{col_colortype == ''kelvin''}}'
+          then:
+          - variables:
+              difval: '{{col_leftright_percentage|int * 45 if right_was_pressed==true
+                else 0 - col_leftright_percentage|int * 45 }}'
+          - action: light.turn_on
+            data:
+              color_temp_kelvin: '{{[(current_ct|int + difval), 6553]|min }}'
+            target:
+              entity_id: !input light_target
+          else:
+          - variables:
+              difval: '{{col_leftright_percentage|int * 3.6 if right_was_pressed==true
+                else 0 - col_leftright_percentage|int * 3.6 }}'
+          - action: light.turn_on
+            data:
+              hs_color: '{{ [(current_hue + difval) % 360, 100]}}'
+            target:
+              entity_id: !input light_target
+      - conditions: '{{trigger.id==''long_up''}}'
+        sequence:
+        - parallel:
+          - repeat:
+              sequence:
+              - action: light.turn_on
+                data:
+                  brightness_step_pct: '{{0.25 * col_updown_percentage|float}}'
+                target:
+                  entity_id: !input light_target
+              - delay:
+                  milliseconds: 125
+              until: '{{repeat.index >= 40 or states(input_helper) == ''release_has_triggered''
+                }}'
+          - sequence:
+            - wait_for_trigger:
+              - trigger: event
+                event_type: zha_event
+                event_data:
+                  device_id: !input remote_device_id
+                  command: stop
+              timeout:
+                seconds: 5
+            - action: input_text.set_value
+              target:
+                entity_id: !input input_helper
+              data:
+                value: release_has_triggered
+        - action: input_text.set_value
+          target:
+            entity_id: !input input_helper
+          data:
+            value: '{{last_leftright_value}}'
+      - conditions: '{{trigger.id==''long_down''}}'
+        sequence:
+        - parallel:
+          - repeat:
+              sequence:
+              - action: light.turn_on
+                data:
+                  brightness_step_pct: '{{0- 0.25 * col_updown_percentage|float}}'
+                target:
+                  entity_id: !input light_target
+              - delay:
+                  milliseconds: 125
+              until: '{{repeat.index >= 40 or states(input_helper) == ''release_has_triggered''
+                }}'
+          - sequence:
+            - wait_for_trigger:
+              - trigger: event
+                event_type: zha_event
+                event_data:
+                  device_id: !input remote_device_id
+                  command: stop
+              timeout:
+                seconds: 5
+            - action: input_text.set_value
+              target:
+                entity_id: !input input_helper
+              data:
+                value: release_has_triggered
+        - action: input_text.set_value
+          target:
+            entity_id: !input input_helper
+          data:
+            value: '{{last_leftright_value}}'
+      - conditions: '{{trigger.id ==''long_right'' or trigger.id == ''long_left''
+          }}'
+        sequence:
+        - parallel:
+          - sequence:
+            - variables:
+                current_ct: '{{2202 if state_attr(light_target[0],''color_temp_kelvin'')
+                  is none else state_attr(light_target[0],''color_temp_kelvin'')|float
+                  }}'
+                current_hue: '{{180 if state_attr(light_target[0],''hs_color'') is
+                  none else state_attr(light_target[0],''hs_color'')[0]|float }}'
+                difval_abs: '{{col_leftright_percentage|float * 12 if col_colortype
+                  == ''kelvin'' else col_leftright_percentage|float * 0.9 }}'
+                difval: '{{difval_abs if trigger.id==''long_right'' else 0 - difval_abs
+                  }}'
+            - repeat:
                 sequence:
                 - if:
-                  - condition: light.is_on
-                    target:
-                      entity_id: !input light_target
-                    options:
-                      behavior: any
+                  - condition: template
+                    value_template: '{{col_colortype == ''kelvin''}}'
                   then:
-                    - action: light.turn_off
-                      target:
-                        entity_id: !input light_target
+                  - action: light.turn_on
+                    data:
+                      color_temp_kelvin: '{{[[(current_ct + repeat.index*difval),
+                        6553]|min, 2202]|max }}'
+                    target:
+                      entity_id: !input light_target
                   else:
-                    - action: light.turn_on
-                      target:
-                        entity_id: !input light_target
-              - conditions: "{{trigger.id == 'leftright'}}" #leftright presses, cycle scenes
-                sequence:
-                  - choose: #if cycling and leftright, choose action based on payload
-                      - conditions: "{{leftright_value == 200}}"
-                        sequence:
-                          - action: scene.turn_on
-                            target:
-                              entity_id: !input cycle_scene1
-                      - conditions: "{{leftright_value == 285}}"
-                        sequence:
-                          - action: scene.turn_on
-                            target:
-                              entity_id: !input cycle_scene2
-                      - conditions: "{{leftright_value == 370}}"
-                        sequence:
-                          - action: scene.turn_on
-                            target:
-                              entity_id: !input cycle_scene3
-                      - conditions: "{{leftright_value == 454}}"
-                        sequence:
-                          - action: scene.turn_on
-                            target:
-                              entity_id: !input cycle_scene4
-                      - conditions: "{{leftright_value == 588}}"
-                        sequence:
-                          - action: scene.turn_on
-                            target:
-                              entity_id: !input cycle_scene5
-              - conditions: "{{trigger.id == 'up'}}" #up presses, cycle scenes 
-                sequence:
                   - action: light.turn_on
                     data:
-                      brightness_step_pct: "{{cycle_updown_percentage|float}}"
-                    target: 
-                      entity_id: !input light_target
-              - conditions: "{{trigger.id == 'down'}}" #down presses, cycle scenes
-                sequence:
-                  - action: light.turn_on
-                    data:
-                      brightness_step_pct: "{{0 - cycle_updown_percentage|float}}"
-                    target: 
-                      entity_id: !input light_target
-              - conditions: "{{trigger.id=='long_up'}}"
-                sequence:
-                  - parallel:
-                    - repeat:
-                        sequence:
-                          - action: light.turn_on
-                            data:
-                              brightness_step_pct: "{{0.25 * cycle_updown_percentage|float}}"
-                            target: 
-                              entity_id: !input light_target
-                          - delay:
-                              milliseconds: 125
-                        until: "{{repeat.index >= 40 or states(input_helper) == 'release_has_triggered' }}"
-                    - sequence:
-                        - wait_for_trigger:
-                          - trigger: event
-                            event_type: zha_event
-                            event_data:
-                              device_id: !input remote_device_id
-                              command: stop
-                          timeout:
-                            seconds: 5
-                        - action: input_text.set_value
-                          target:
-                            entity_id: !input input_helper
-                          data:
-                            value: 'release_has_triggered'
-                  - action: input_text.set_value
-                    target:
-                      entity_id: !input input_helper
-                    data:
-                      value: "{{last_leftright_value}}"
-              - conditions: "{{trigger.id=='long_down'}}"
-                sequence:
-                  - parallel:
-                    - repeat:
-                        sequence:
-                          - action: light.turn_on
-                            data:
-                              brightness_step_pct: "{{0- 0.25 * cycle_updown_percentage|float}}"
-                            target: 
-                              entity_id: !input light_target
-                          - delay:
-                              milliseconds: 125
-                        until: "{{repeat.index >= 40 or states(input_helper) == 'release_has_triggered' }}"
-                    - sequence:
-                        - wait_for_trigger:
-                          - trigger: event
-                            event_type: zha_event
-                            event_data:
-                              device_id: !input remote_device_id
-                              command: stop
-                          timeout:
-                            seconds: 5
-                        - action: input_text.set_value
-                          target:
-                            entity_id: !input input_helper
-                          data:
-                            value: 'release_has_triggered'
-                  - action: input_text.set_value
-                    target:
-                      entity_id: !input input_helper
-                    data:
-                      value: "{{last_leftright_value}}"
-      #The actions for color/brightness control
-      - conditions: "{{action_type == 'col'}}"
-        sequence:
-          - choose:
-              - conditions: "{{trigger.id == 'on_press' or trigger.id == 'off_press'}}" #on/off presses, color/brightness mode
-                sequence:
-                - if:
-                  - condition: light.is_on
+                      hs_color: '{{ [(current_hue + repeat.index*difval) % 360, 100]}}'
                     target:
                       entity_id: !input light_target
-                    options:
-                      behavior: any
-                  then:
-                    - action: light.turn_off
-                      target:
-                        entity_id: !input light_target
-                  else:
-                    - action: light.turn_on
-                      target:
-                        entity_id: !input light_target
-              - conditions: "{{trigger.id == 'up'}}" #up presses, col mode
-                sequence:
-                  - action: light.turn_on
-                    data:
-                      brightness_step_pct: "{{col_updown_percentage|int}}"
-                    target: 
-                      entity_id: !input light_target
-              - conditions: "{{trigger.id == 'down'}}" #down presses, col mode
-                sequence:
-                  - action: light.turn_on
-                    data:
-                      brightness_step_pct: "{{0-col_updown_percentage|int}}"
-                    target: 
-                      entity_id: !input light_target
-              - conditions: "{{trigger.id=='leftright'}}"
-                sequence:
-                  - variables:
-                      current_ct: "{{2202 if state_attr(light_target[0],'color_temp_kelvin') is none else state_attr(light_target[0],'color_temp_kelvin')|int }}" 
-                      current_hue: "{{180 if state_attr(light_target[0],'hs_color') is none else state_attr(light_target[0],'hs_color')[0]|int }}"
-                  - if:
-                      - condition: template
-                        value_template: "{{col_colortype == 'kelvin'}}"
-                    then:
-                      - variables:
-                          difval: "{{col_leftright_percentage|int * 45 if right_was_pressed==true else 0 - col_leftright_percentage|int * 45 }}"
-                      - action: light.turn_on
-                        data:
-                          color_temp_kelvin: "{{[(current_ct|int + difval), 6553]|min }}"
-                        target: 
-                          entity_id: !input light_target
-                    else:
-                      - variables:
-                          difval: "{{col_leftright_percentage|int * 3.6 if right_was_pressed==true else 0 - col_leftright_percentage|int * 3.6 }}"
-                      - action: light.turn_on
-                        data:
-                          hs_color: '{{ [(current_hue + difval) % 360, 100]}}'
-                          #saturation = 100, calculate remainder to get rid of overshoots
-                        target: 
-                          entity_id: !input light_target
-              - conditions: "{{trigger.id=='long_up'}}"
-                sequence:
-                  - parallel:
-                    - repeat:
-                        sequence:
-                          - action: light.turn_on
-                            data:
-                              brightness_step_pct: "{{0.25 * col_updown_percentage|float}}"
-                            target: 
-                              entity_id: !input light_target
-                          - delay:
-                              milliseconds: 125
-                        until: "{{repeat.index >= 40 or states(input_helper) == 'release_has_triggered' }}"
-                    - sequence:
-                        - wait_for_trigger:
-                          - trigger: event
-                            event_type: zha_event
-                            event_data:
-                              device_id: !input remote_device_id
-                              command: stop
-                          timeout:
-                            seconds: 5
-                        - action: input_text.set_value
-                          target:
-                            entity_id: !input input_helper
-                          data:
-                            value: 'release_has_triggered'
-                  - action: input_text.set_value
-                    target:
-                      entity_id: !input input_helper
-                    data:
-                      value: "{{last_leftright_value}}"
-              - conditions: "{{trigger.id=='long_down'}}"
-                sequence:
-                  - parallel:
-                    - repeat:
-                        sequence:
-                          - action: light.turn_on
-                            data:
-                              brightness_step_pct: "{{0- 0.25 * col_updown_percentage|float}}"
-                            target: 
-                              entity_id: !input light_target
-                          - delay:
-                              milliseconds: 125
-                        until: "{{repeat.index >= 40 or states(input_helper) == 'release_has_triggered' }}"
-                    - sequence:
-                        - wait_for_trigger:
-                          - trigger: event
-                            event_type: zha_event
-                            event_data:
-                              device_id: !input remote_device_id
-                              command: stop
-                          timeout:
-                            seconds: 5
-                        - action: input_text.set_value
-                          target:
-                            entity_id: !input input_helper
-                          data:
-                            value: 'release_has_triggered'
-                  - action: input_text.set_value
-                    target:
-                      entity_id: !input input_helper
-                    data:
-                      value: "{{last_leftright_value}}"
-              - conditions: "{{trigger.id =='long_right' or trigger.id == 'long_left' }}"
-                sequence:
-                  - parallel:
-                    - sequence:
-                      - variables:
-                          current_ct: "{{2202 if state_attr(light_target[0],'color_temp_kelvin') is none else state_attr(light_target[0],'color_temp_kelvin')|float }}" 
-                          current_hue: "{{180 if state_attr(light_target[0],'hs_color') is none else state_attr(light_target[0],'hs_color')[0]|float }}"
-                          difval_abs: "{{col_leftright_percentage|float * 12 if col_colortype == 'kelvin' else col_leftright_percentage|float * 0.9 }}"
-                          difval: "{{difval_abs if trigger.id=='long_right' else 0 - difval_abs }}"
-                      - repeat:
-                          sequence:
-                            - if:
-                              - condition: template
-                                value_template: "{{col_colortype == 'kelvin'}}"
-                              then:
-                                - action: light.turn_on
-                                  data:
-                                    color_temp_kelvin: "{{[[(current_ct + repeat.index*difval), 6553]|min, 2202]|max }}"
-                                  target: 
-                                    entity_id: !input light_target
-                              else:
-                                - action: light.turn_on
-                                  data:
-                                    hs_color: '{{ [(current_hue + repeat.index*difval) % 360, 100]}}'
-                                    #saturation = 100, calculate remainder to get rid of overshoots
-                                  target: 
-                                    entity_id: !input light_target
-                            - delay:
-                                milliseconds: 125
-                          until: "{{repeat.index >= 40 or states(input_helper) == 'release_has_triggered' }}"
-                    - sequence:
-                        - wait_for_trigger:
-                          - trigger: event
-                            event_type: zha_event
-                            event_data:
-                              device_id: !input remote_device_id
-                              command: stop_move_step
-                          timeout:
-                            seconds: 5
-                        - action: input_text.set_value
-                          target:
-                            entity_id: !input input_helper
-                          data:
-                            value: 'release_has_triggered'
-                  - action: input_text.set_value
-                    target:
-                      entity_id: !input input_helper
-                    data:
-                      value: "{{last_leftright_value}}"
-  - if:
-      - condition: trigger
-        id: leftright
-    then:
-      - action: input_text.set_value
-        target:
-          entity_id: !input input_helper
-        data:
-          value: "{{leftright_value}}"
+                - delay:
+                    milliseconds: 125
+                until: '{{repeat.index >= 40 or states(input_helper) == ''release_has_triggered''
+                  }}'
+          - sequence:
+            - wait_for_trigger:
+              - trigger: event
+                event_type: zha_event
+                event_data:
+                  device_id: !input remote_device_id
+                  command: stop_move_step
+              timeout:
+                seconds: 5
+            - action: input_text.set_value
+              target:
+                entity_id: !input input_helper
+              data:
+                value: release_has_triggered
+        - action: input_text.set_value
+          target:
+            entity_id: !input input_helper
+          data:
+            value: '{{last_leftright_value}}'
+- if:
+  - condition: trigger
+    id: leftright
+  then:
+  - action: input_text.set_value
+    target:
+      entity_id: !input input_helper
+    data:
+      value: '{{leftright_value}}'
 mode: queued
 max: 5
-
-
-
